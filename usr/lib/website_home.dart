@@ -1,123 +1,184 @@
 import 'package:flutter/material.dart';
 
-class WebsiteHomePage extends StatelessWidget {
-  const WebsiteHomePage({super.key});
+class LinkedInHomePage extends StatelessWidget {
+  const LinkedInHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      // Responsive App Bar
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: const ResponsiveNavBar(),
+      backgroundColor: const Color(0xFFF3F2EF),
+      body: Column(
+        children: [
+          const LinkedInNavBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1128),
+                  child: const Padding(
+                    padding: EdgeInsets.only(top: 24.0, left: 16, right: 16),
+                    child: ResponsiveLayout(),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      drawer: const MobileDrawer(),
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            HeroSection(),
-            FeaturesSection(),
-            TestimonialsSection(),
-            CallToActionSection(),
-            Footer(),
-          ],
-        ),
-      ),
+    );
+  }
+}
+
+class ResponsiveLayout extends StatelessWidget {
+  const ResponsiveLayout({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 768) {
+          // Mobile Layout
+          return const Column(
+            children: [
+              ProfileCard(),
+              SizedBox(height: 8),
+              CreatePostCard(),
+              SizedBox(height: 8),
+              FeedSection(),
+            ],
+          );
+        } else {
+          // Desktop Layout (3 Columns)
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Left Sidebar (Profile)
+              const SizedBox(
+                width: 225,
+                child: Column(
+                  children: [
+                    ProfileCard(),
+                    SizedBox(height: 8),
+                    RecentGroupsCard(),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 24),
+              // Middle Column (Feed)
+              const Expanded(
+                child: Column(
+                  children: [
+                    CreatePostCard(),
+                    SizedBox(height: 8),
+                    Divider(height: 16, thickness: 0.5, color: Colors.grey),
+                    FeedSection(),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 24),
+              // Right Sidebar (News)
+              const SizedBox(
+                width: 300,
+                child: NewsCard(),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 }
 
 // --- Navigation Bar ---
-class ResponsiveNavBar extends StatelessWidget {
-  const ResponsiveNavBar({super.key});
+class LinkedInNavBar extends StatelessWidget {
+  const LinkedInNavBar({super.key});
 
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Container(
+      height: 52,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Logo
-          Row(
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 0 : 16),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1128),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(Icons.auto_awesome, color: Theme.of(context).primaryColor, size: 32),
-              const SizedBox(width: 8),
-              Text(
-                'BrandName',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[900],
-                ),
-              ),
-            ],
-          ),
-          
-          // Desktop Menu
-          if (isDesktop)
-            Row(
-              children: [
-                _NavButton(title: 'Home'),
-                _NavButton(title: 'Features'),
-                _NavButton(title: 'Pricing'),
-                _NavButton(title: 'About'),
-                const SizedBox(width: 24),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+              // Logo & Search
+              Row(
+                children: [
+                  Container(
+                    width: 34,
+                    height: 34,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0A66C2),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'in',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text('Get Started'),
-                ),
-              ],
-            )
-          else
-            // Mobile Menu Icon (opens drawer)
-            IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-            ),
-        ],
-      ),
-    );
-  }
-}
+                  const SizedBox(width: 8),
+                  if (isDesktop)
+                    Container(
+                      width: 280,
+                      height: 34,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEEF3F8),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.grey[700], size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Search',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Icon(Icons.search, color: Colors.grey[600]),
+                ],
+              ),
 
-class _NavButton extends StatelessWidget {
-  final String title;
-  const _NavButton({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: TextButton(
-        onPressed: () {},
-        child: Text(
-          title,
-          style: TextStyle(
-            color: Colors.grey[700],
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
+              // Nav Icons
+              Row(
+                children: [
+                  _NavIcon(icon: Icons.home, label: 'Home', isActive: true),
+                  _NavIcon(icon: Icons.people, label: 'My Network'),
+                  _NavIcon(icon: Icons.work, label: 'Jobs'),
+                  _NavIcon(icon: Icons.message, label: 'Messaging'),
+                  _NavIcon(icon: Icons.notifications, label: 'Notifications'),
+                  _NavIcon(icon: Icons.person, label: 'Me', isAvatar: true),
+                  if (isDesktop) ...[
+                    const VerticalDivider(indent: 12, endIndent: 12),
+                    _NavIcon(icon: Icons.grid_view, label: 'For Business'),
+                  ],
+                ],
+              ),
+            ],
           ),
         ),
       ),
@@ -125,552 +186,531 @@ class _NavButton extends StatelessWidget {
   }
 }
 
-class MobileDrawer extends StatelessWidget {
-  const MobileDrawer({super.key});
+class _NavIcon extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool isActive;
+  final bool isAvatar;
 
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(Icons.auto_awesome, color: Colors.white, size: 48),
-                SizedBox(height: 16),
-                Text(
-                  'BrandName',
-                  style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          ListTile(leading: const Icon(Icons.home), title: const Text('Home'), onTap: () {}),
-          ListTile(leading: const Icon(Icons.star), title: const Text('Features'), onTap: () {}),
-          ListTile(leading: const Icon(Icons.attach_money), title: const Text('Pricing'), onTap: () {}),
-          ListTile(leading: const Icon(Icons.info), title: const Text('About'), onTap: () {}),
-          const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              child: const Text('Get Started'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// --- Hero Section ---
-class HeroSection extends StatelessWidget {
-  const HeroSection({super.key});
+  const _NavIcon({
+    required this.icon,
+    required this.label,
+    this.isActive = false,
+    this.isAvatar = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isDesktop = MediaQuery.of(context).size.width > 800;
-    
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
-      color: Colors.grey[50],
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: isDesktop
-              ? Row(
-                  children: [
-                    Expanded(child: _buildContent(context)),
-                    const SizedBox(width: 48),
-                    Expanded(child: _buildImagePlaceholder()),
-                  ],
-                )
-              : Column(
-                  children: [
-                    _buildContent(context),
-                    const SizedBox(height: 48),
-                    _buildImagePlaceholder(),
-                  ],
-                ),
-        ),
-      ),
-    );
-  }
 
-  Widget _buildContent(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Text(
-            'NEW FEATURE AVAILABLE',
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-            ),
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Build beautiful websites with Flutter',
-          style: TextStyle(
-            fontSize: 48,
-            fontWeight: FontWeight.w900,
-            height: 1.1,
-            color: Colors.grey[900],
-          ),
-        ),
-        const SizedBox(height: 24),
-        Text(
-          'Create stunning, responsive web applications that work seamlessly across all devices. One codebase, everywhere.',
-          style: TextStyle(
-            fontSize: 18,
-            color: Colors.grey[600],
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 32),
-        Row(
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Start Building'),
-            ),
-            const SizedBox(width: 16),
-            TextButton(
-              onPressed: () {},
-              style: TextButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              child: const Text('Learn More →'),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+    if (!isDesktop && ['My Network', 'Jobs', 'For Business'].contains(label)) {
+      return const SizedBox.shrink(); // Hide some icons on mobile
+    }
 
-  Widget _buildImagePlaceholder() {
-    return Container(
-      height: 400,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (isAvatar)
+            const CircleAvatar(
+              radius: 12,
+              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
+            )
+          else
+            Icon(
+              icon,
+              size: 24,
+              color: isActive ? Colors.black87 : Colors.grey[600],
+            ),
+          if (isDesktop)
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: isActive ? Colors.black87 : Colors.grey[600],
+              ),
+            ),
+          if (isActive && isDesktop)
+            Container(
+              margin: const EdgeInsets.only(top: 2),
+              height: 2,
+              width: 40,
+              color: Colors.black87,
+            ),
         ],
-      ),
-      child: Center(
-        child: Icon(
-          Icons.web_asset,
-          size: 100,
-          color: Colors.grey[300],
-        ),
       ),
     );
   }
 }
 
-// --- Features Section ---
-class FeaturesSection extends StatelessWidget {
-  const FeaturesSection({super.key});
+// --- Left Sidebar Widgets ---
+class ProfileCard extends StatelessWidget {
+  const ProfileCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.topCenter,
             children: [
-              Text(
-                'Everything you need',
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Container(
+                height: 60,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFA0B4B7),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Text(
-                'Powerful Features',
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[900],
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: CircleAvatar(
+                  radius: 36,
+                  backgroundColor: Colors.white,
+                  child: const CircleAvatar(
+                    radius: 34,
+                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Our platform provides all the tools you need to succeed.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 64),
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isDesktop = constraints.maxWidth > 800;
-                  return Wrap(
-                    spacing: 32,
-                    runSpacing: 32,
-                    alignment: WrapAlignment.center,
-                    children: [
-                      _FeatureCard(
-                        icon: Icons.speed,
-                        title: 'Lightning Fast',
-                        description: 'Optimized for speed and performance across all devices.',
-                        width: isDesktop ? 350 : constraints.maxWidth,
-                      ),
-                      _FeatureCard(
-                        icon: Icons.security,
-                        title: 'Secure by Default',
-                        description: 'Enterprise-grade security built into every component.',
-                        width: isDesktop ? 350 : constraints.maxWidth,
-                      ),
-                      _FeatureCard(
-                        icon: Icons.devices,
-                        title: 'Fully Responsive',
-                        description: 'Looks amazing on mobile, tablet, and desktop screens.',
-                        width: isDesktop ? 350 : constraints.maxWidth,
-                      ),
-                    ],
-                  );
-                },
               ),
             ],
           ),
-        ),
+          const SizedBox(height: 16),
+          const Text(
+            'Alex Developer',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Senior Flutter Engineer | Building Scalable Apps',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1),
+          _buildStatRow('Who viewed your profile', '142'),
+          _buildStatRow('Impressions of your post', '1,234'),
+          const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Icon(Icons.bookmark, size: 16, color: Colors.grey[600]),
+                const SizedBox(width: 8),
+                const Text(
+                  'My Items',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(color: Colors.grey[600], fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+          Text(
+            value,
+            style: const TextStyle(color: Color(0xFF0A66C2), fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _FeatureCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String description;
-  final double width;
+class RecentGroupsCard extends StatelessWidget {
+  const RecentGroupsCard({super.key});
 
-  const _FeatureCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-    required this.width,
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text('Recent', style: TextStyle(fontSize: 12)),
+          const SizedBox(height: 8),
+          _buildItem('Flutter Developers'),
+          _buildItem('Dart Language'),
+          _buildItem('Mobile App Design'),
+          _buildItem('Tech Innovations'),
+          const SizedBox(height: 16),
+          const Text(
+            'Groups',
+            style: TextStyle(color: Color(0xFF0A66C2), fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+          const SizedBox(height: 8),
+          _buildItem('Flutter Community'),
+          _buildItem('Startup Founders'),
+          const SizedBox(height: 16),
+          const Text(
+            'Followed Hashtags',
+            style: TextStyle(color: Color(0xFF0A66C2), fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+          const SizedBox(height: 8),
+          _buildItem('#flutter'),
+          _buildItem('#coding'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Icon(Icons.tag, size: 16, color: Colors.grey[600]),
+          const SizedBox(width: 8),
+          Text(
+            text,
+            style: TextStyle(color: Colors.grey[600], fontSize: 12, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// --- Middle Column Widgets ---
+class CreatePostCard extends StatelessWidget {
+  const CreatePostCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const CircleAvatar(
+                radius: 24,
+                backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey[400]!),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: const Text(
+                    'Start a post',
+                    style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildActionButton(Icons.image, 'Media', Colors.blue),
+              _buildActionButton(Icons.calendar_month, 'Event', Colors.orange),
+              _buildActionButton(Icons.article, 'Write article', Colors.redAccent),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(IconData icon, String label, Color color) {
+    return Row(
+      children: [
+        Icon(icon, color: color, size: 24),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold, fontSize: 14),
+        ),
+      ],
+    );
+  }
+}
+
+class FeedSection extends StatelessWidget {
+  const FeedSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _PostCard(
+          authorName: 'Google Developers',
+          authorHeadline: '12,345,678 followers',
+          timeAgo: '2h • Edited',
+          content: 'We are excited to announce the new features coming to Flutter! 🚀\n\nBuild beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.',
+          imageUrl: 'https://storage.googleapis.com/cms-storage-bucket/70760bf1e88b184bb1bc.png',
+          likes: '12,432',
+          comments: '453 comments',
+        ),
+        const SizedBox(height: 8),
+        _PostCard(
+          authorName: 'TechCrunch',
+          authorHeadline: 'Technology News and Analysis',
+          timeAgo: '5h',
+          content: 'The future of AI is here. See how companies are integrating LLMs into their daily workflows to boost productivity.',
+          imageUrl: 'https://picsum.photos/seed/tech/800/400',
+          likes: '5,291',
+          comments: '128 comments',
+        ),
+        const SizedBox(height: 8),
+        _PostCard(
+          authorName: 'Sarah Wilson',
+          authorHeadline: 'UX Designer at Creative Agency',
+          timeAgo: '1d',
+          content: 'Just finished a new case study on accessibility in web design. It is crucial to build for everyone! #a11y #uxdesign #webdev',
+          imageUrl: 'https://picsum.photos/seed/design/800/500',
+          likes: '892',
+          comments: '45 comments',
+        ),
+      ],
+    );
+  }
+}
+
+class _PostCard extends StatelessWidget {
+  final String authorName;
+  final String authorHeadline;
+  final String timeAgo;
+  final String content;
+  final String imageUrl;
+  final String likes;
+  final String comments;
+
+  const _PostCard({
+    required this.authorName,
+    required this.authorHeadline,
+    required this.timeAgo,
+    required this.content,
+    required this.imageUrl,
+    required this.likes,
+    required this.comments,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: width,
-      padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
+          // Header
+          Padding(
             padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=${authorName.replaceAll(' ', '+')}&background=random'),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        authorName,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                      ),
+                      Text(
+                        authorHeadline,
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            timeAgo,
+                            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                          ),
+                          const SizedBox(width: 4),
+                          Icon(Icons.public, size: 12, color: Colors.grey[600]),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.more_horiz, color: Colors.grey[600]),
+              ],
             ),
-            child: Icon(icon, color: Theme.of(context).primaryColor, size: 32),
           ),
-          const SizedBox(height: 24),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[900],
-            ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: Text(content, style: const TextStyle(fontSize: 14)),
           ),
           const SizedBox(height: 12),
-          Text(
-            description,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[600],
-              height: 1.5,
+          // Image
+          if (imageUrl.isNotEmpty)
+            Image.network(
+              imageUrl,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                height: 200,
+                color: Colors.grey[200],
+                child: const Center(child: Icon(Icons.broken_image, color: Colors.grey)),
+              ),
+            ),
+          // Stats
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                const Icon(Icons.thumb_up_alt, size: 16, color: Color(0xFF0A66C2)),
+                const SizedBox(width: 4),
+                Text(likes, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+                const Spacer(),
+                Text(comments, style: TextStyle(color: Colors.grey[600], fontSize: 12)),
+              ],
+            ),
+          ),
+          const Divider(height: 1),
+          // Action Buttons
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildActionButton(Icons.thumb_up_outlined, 'Like'),
+                _buildActionButton(Icons.comment_outlined, 'Comment'),
+                _buildActionButton(Icons.repeat, 'Repost'),
+                _buildActionButton(Icons.send, 'Send'),
+              ],
             ),
           ),
         ],
       ),
     );
   }
+
+  Widget _buildActionButton(IconData icon, String label) {
+    return TextButton.icon(
+      onPressed: () {},
+      icon: Icon(icon, color: Colors.grey[600], size: 20),
+      label: Text(
+        label,
+        style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.bold),
+      ),
+    );
+  }
 }
 
-// --- Testimonials Section ---
-class TestimonialsSection extends StatelessWidget {
-  const TestimonialsSection({super.key});
+// --- Right Sidebar Widgets ---
+class NewsCard extends StatelessWidget {
+  const NewsCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.grey[50],
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
-          child: Column(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Icon(Icons.format_quote, size: 64, color: Colors.grey),
-              const SizedBox(height: 24),
               const Text(
-                '"This platform completely transformed how we build web applications. The development speed is incredible and the result is flawless."',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.italic,
-                  height: 1.4,
+                'LinkedIn News',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Icon(Icons.info, size: 16, color: Colors.grey[600]),
+            ],
+          ),
+          const SizedBox(height: 16),
+          _buildNewsItem('Top startups in 2024', '1d ago • 10,934 readers'),
+          _buildNewsItem('AI regulation talks heat up', '12h ago • 5,211 readers'),
+          _buildNewsItem('Remote work trends', '2d ago • 8,123 readers'),
+          _buildNewsItem('Tech hiring stabilizes', '4h ago • 2,456 readers'),
+          _buildNewsItem('New Flutter version released', '1h ago • 15,342 readers'),
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: () {},
+            child: Row(
+              children: [
+                Text('Show more', style: TextStyle(color: Colors.grey[600])),
+                Icon(Icons.keyboard_arrow_down, color: Colors.grey[600]),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNewsItem(String title, String subtitle) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 6),
+            child: Icon(Icons.circle, size: 6, color: Colors.grey[600]),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-              ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey[300],
-                    radius: 24,
-                    child: const Icon(Icons.person, color: Colors.white),
-                  ),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sarah Johnson',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[900],
-                        ),
-                      ),
-                      Text(
-                        'CTO at TechCorp',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// --- Call To Action Section ---
-class CallToActionSection extends StatelessWidget {
-  const CallToActionSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 24),
-      color: Theme.of(context).primaryColor,
-      child: Center(
-        child: Column(
-          children: [
-            const Text(
-              'Ready to get started?',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'Join thousands of developers building the future today.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.white70,
-              ),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Theme.of(context).primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              child: const Text('Start Your Free Trial'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// --- Footer ---
-class Footer extends StatelessWidget {
-  const Footer({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[900],
-      padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 24),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: const [
-                            Icon(Icons.auto_awesome, color: Colors.white, size: 24),
-                            SizedBox(width: 8),
-                            Text(
-                              'BrandName',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Making web development accessible, fast, and beautiful for everyone.',
-                          style: TextStyle(color: Colors.grey[400], height: 1.5),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 48),
-                  // Simple Footer Links
-                  if (MediaQuery.of(context).size.width > 600) ...[
-                    _FooterColumn(
-                      title: 'Product',
-                      links: const ['Features', 'Pricing', 'Integrations', 'FAQ'],
-                    ),
-                    const SizedBox(width: 32),
-                    _FooterColumn(
-                      title: 'Company',
-                      links: const ['About', 'Careers', 'Blog', 'Contact'],
-                    ),
-                  ],
-                ],
-              ),
-              const SizedBox(height: 64),
-              Divider(color: Colors.grey[800]),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '© 2024 BrandName Inc. All rights reserved.',
-                    style: TextStyle(color: Colors.grey[500], fontSize: 14),
-                  ),
-                  Row(
-                    children: [
-                      Icon(Icons.facebook, color: Colors.grey[500], size: 20),
-                      const SizedBox(width: 16),
-                      Icon(Icons.camera_alt, color: Colors.grey[500], size: 20), // Instagram placeholder
-                      const SizedBox(width: 16),
-                      Icon(Icons.alternate_email, color: Colors.grey[500], size: 20), // Twitter placeholder
-                    ],
-                  ),
-                ],
-              ),
-            ],
           ),
-        ),
+        ],
       ),
-    );
-  }
-}
-
-class _FooterColumn extends StatelessWidget {
-  final String title;
-  final List<String> links;
-
-  const _FooterColumn({required this.title, required this.links});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 24),
-        ...links.map((link) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Text(
-                link,
-                style: TextStyle(color: Colors.grey[400], fontSize: 14),
-              ),
-            )),
-      ],
     );
   }
 }

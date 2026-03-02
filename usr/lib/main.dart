@@ -11,16 +11,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Modern Flutter Website',
+      title: 'LinkedIn Clone',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2563EB)),
+        // LinkedIn Blue
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF0A66C2)),
         useMaterial3: true,
-        scaffoldBackgroundColor: Colors.white,
+        // Light Grey Background typical of LinkedIn
+        scaffoldBackgroundColor: const Color(0xFFF3F2EF),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
+        ),
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const WebsiteHomePage(),
+        '/': (context) => const LinkedInHomePage(),
       },
     );
   }
